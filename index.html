@@ -1,187 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Management Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 400px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .file-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .file-list li {
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-bottom: 5px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .actions button {
-            margin-left: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple File Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f9f9f9;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    input[type="text"], input[type="password"], input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .folder, .file {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f1f1f1;
+    }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
-    <!-- Sign In Page -->
-    <div id="signInPage">
-        <h2>Sign In</h2>
-        <form id="signInForm">
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Password" required>
-            <input type="text" placeholder="Create Username" required>
-            <button type="submit">Sign In</button>
-        </form>
+  <div class="container" id="app">
+    <h1>Sign In</h1>
+    <div id="sign-in">
+      <input type="email" id="email" placeholder="Enter Email">
+      <input type="password" id="password" placeholder="Enter Password">
+      <input type="text" id="username" placeholder="Create Username">
+      <button onclick="signIn()">Sign In</button>
     </div>
 
-    <!-- Login Page -->
-    <div id="loginPage" style="display: none;">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="text" placeholder="Username" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
+    <div id="login" style="display:none;">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Enter Username">
+      <input type="password" id="login-password" placeholder="Enter Password">
+      <button onclick="logIn()">Login</button>
     </div>
 
-    <!-- Dashboard Page -->
-    <div id="dashboardPage" style="display: none;">
-        <h2>Dashboard</h2>
-        <form id="createFolderForm">
-            <input type="text" placeholder="Folder Name" required>
-            <button type="submit">Create Folder</button>
-        </form>
-        <ul class="file-list" id="folderList"></ul>
+    <div id="dashboard" style="display:none;">
+      <h2>Dashboard</h2>
+      <div id="folders"></div>
+      <input type="text" id="folder-name" placeholder="Folder Name">
+      <div class="actions">
+        <button onclick="createFolder()">Create Folder</button>
+        <button onclick="deleteFolder()">Delete Folder</button>
+      </div>
     </div>
 
-    <!-- Folder Details Page -->
-    <div id="folderPage" style="display: none;">
-        <h2>Folder: <span id="folderName"></span></h2>
-        <form id="uploadFileForm">
-            <input type="file" required>
-            <button type="submit">Upload File</button>
-        </form>
-        <ul class="file-list" id="fileList"></ul>
+    <div id="folder-view" style="display:none;">
+      <h2>Folder View</h2>
+      <input type="file" id="file-input">
+      <div class="actions">
+        <button onclick="uploadFile()">Upload File</button>
+        <button onclick="deleteFile()">Delete File</button>
+      </div>
+      <div id="files"></div>
     </div>
-</div>
 
-<script>
-    const signInPage = document.getElementById('signInPage');
-    const loginPage = document.getElementById('loginPage');
-    const dashboardPage = document.getElementById('dashboardPage');
-    const folderPage = document.getElementById('folderPage');
+    <div id="logout-view" style="display:none;">
+      <button onclick="logOut()">Logout</button>
+    </div>
+  </div>
 
-    const signInForm = document.getElementById('signInForm');
-    const loginForm = document.getElementById('loginForm');
-    const createFolderForm = document.getElementById('createFolderForm');
-    const uploadFileForm = document.getElementById('uploadFileForm');
+  <script>
+    let folders = {};
+    let currentFolder = null;
 
-    const folderList = document.getElementById('folderList');
-    const fileList = document.getElementById('fileList');
-    const folderNameDisplay = document.getElementById('folderName');
+    function signIn() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value;
 
-    let currentFolder = '';
+      if (email && password && username) {
+        alert('Sign In Successful!');
+        document.getElementById('sign-in').style.display = 'none';
+        document.getElementById('login').style.display = 'block';
+      } else {
+        alert('Please fill all fields!');
+      }
+    }
 
-    signInForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        signInPage.style.display = 'none';
-        loginPage.style.display = 'block';
-    });
+    function logIn() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
 
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        loginPage.style.display = 'none';
-        dashboardPage.style.display = 'block';
-    });
+      if (username && password) {
+        alert('Login Successful!');
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('logout-view').style.display = 'block';
+      } else {
+        alert('Please fill all fields!');
+      }
+    }
 
-    createFolderForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const folderName = createFolderForm.querySelector('input').value;
-        const folderItem = document.createElement('li');
-        folderItem.textContent = folderName;
-        folderItem.addEventListener('click', () => {
-            currentFolder = folderName;
-            folderNameDisplay.textContent = folderName;
-            dashboardPage.style.display = 'none';
-            folderPage.style.display = 'block';
-        });
-        folderList.appendChild(folderItem);
-        createFolderForm.reset();
-    });
+    function createFolder() {
+      const folderName = document.getElementById('folder-name').value;
 
-    uploadFileForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const fileInput = uploadFileForm.querySelector('input');
-        const fileName = fileInput.files[0].name;
-        const fileItem = document.createElement('li');
-        fileItem.textContent = fileName;
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => {
-            fileItem.remove();
-        });
-        fileItem.appendChild(deleteButton);
-        fileList.appendChild(fileItem);
-        uploadFileForm.reset();
-    });
-</script>
+      if (folderName) {
+        folders[folderName] = [];
+        renderFolders();
+        document.getElementById('folder-name').value = '';
+      } else {
+        alert('Folder name cannot be empty!');
+      }
+    }
 
+    function renderFolders() {
+      const foldersDiv = document.getElementById('folders');
+      foldersDiv.innerHTML = '';
+      Object.keys(folders).forEach(folder => {
+        const folderDiv = document.createElement('div');
+        folderDiv.className = 'folder';
+        folderDiv.textContent = folder;
+        folderDiv.onclick = () => openFolder(folder);
+        foldersDiv.appendChild(folderDiv);
+      });
+    }
+
+    function deleteFolder() {
+      const folderName = document.getElementById('folder-name').value;
+
+      if (folders[folderName]) {
+        delete folders[folderName];
+        renderFolders();
+      } else {
+        alert('Folder not found!');
+      }
+    }
+
+    function openFolder(folderName) {
+      currentFolder = folderName;
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('folder-view').style.display = 'block';
+      renderFiles();
+    }
+
+    function renderFiles() {
+      const filesDiv = document.getElementById('files');
+      filesDiv.innerHTML = '';
+
+      folders[currentFolder].forEach(file => {
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'file';
+        fileDiv.textContent = file;
+        filesDiv.appendChild(fileDiv);
+      });
+    }
+
+    function uploadFile() {
+      const fileInput = document.getElementById('file-input');
+      const file = fileInput.files[0];
+
+      if (file) {
+        folders[currentFolder].push(file.name);
+        renderFiles();
+        fileInput.value = '';
+      } else {
+        alert('Please select a file!');
+      }
+    }
+
+    function deleteFile() {
+      if (folders[currentFolder].length > 0) {
+        folders[currentFolder].pop();
+        renderFiles();
+      } else {
+        alert('No files to delete!');
+      }
+    }
+
+    function logOut() {
+      alert('Logged out successfully!');
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('folder-view').style.display = 'none';
+      document.getElementById('logout-view').style.display = 'none';
+      document.getElementById('login').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
