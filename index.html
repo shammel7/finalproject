@@ -233,6 +233,42 @@
       document.getElementById('logout-view').style.display = 'none';
       document.getElementById('login').style.display = 'block';
     }
+    function renderFiles() {
+  const filesDiv = document.getElementById('files');
+  filesDiv.innerHTML = '';
+
+  folders[currentFolder].forEach(file => {
+    const fileDiv = document.createElement('div');
+    fileDiv.className = 'file';
+    fileDiv.textContent = file.name;
+    
+    // Create "Open File" button
+    const openButton = document.createElement('button');
+    openButton.textContent = "Open";
+    openButton.onclick = () => openFile(file);
+    
+    fileDiv.appendChild(openButton);
+    filesDiv.appendChild(fileDiv);
+  });
+}
+
+function uploadFile() {
+  const fileInput = document.getElementById('file-input');
+  const file = fileInput.files[0];
+
+  if (file) {
+    const fileURL = URL.createObjectURL(file); // Create a URL for the file
+    folders[currentFolder].push({ name: file.name, url: fileURL });
+    renderFiles();
+    fileInput.value = '';
+  } else {
+    alert('Please select a file!');
+  }
+}
+
+function openFile(file) {
+  window.open(file.url, '_blank');
+}
   </script>
 </body>
 </html>
