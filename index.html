@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+   <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -72,7 +73,7 @@
 </head>
 <body>
   <div class="container" id="app">
-    <h1>Admin Login</h1>
+    <h1>Login</h1>
     <div id="login">
       <input type="text" id="login-username" placeholder="Enter Username">
       <input type="password" id="login-password" placeholder="Enter Password">
@@ -81,12 +82,10 @@
 
     <div id="dashboard" style="display:none;">
       <h2>Dashboard</h2>
-      <div id="admin-section" style="display:none;">
-        <input type="text" id="folder-name" placeholder="Enter Folder Name">
-        <button onclick="createFolder()">Create Folder</button>
-        <h3>Folders</h3>
-        <div id="folder-list"></div>
-      </div>
+      <input type="text" id="folder-name" placeholder="Enter Folder Name">
+      <button onclick="createFolder()">Create Folder</button>
+      <h3>Folders</h3>
+      <div id="folder-list"></div>
       <input type="file" id="file-input">
       <button onclick="uploadFile()">Upload File</button>
       <h3>Uploaded Files</h3>
@@ -98,31 +97,21 @@
   <script>
     let files = [];
     let folders = [];
-    let isAdmin = false;
     
     function logIn() {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
       
-      if (username === 'admin' && password === 'admin123') {
-        isAdmin = true;
-        alert('Admin Login Successful!');
-        document.getElementById('admin-section').style.display = 'block';
-      } else if (username && password) {
-        alert('User Login Successful!');
+      if (username && password) {
+        alert('Login Successful!');
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
       } else {
         alert('Please enter valid credentials!');
-        return;
       }
-      document.getElementById('login').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
     }
 
     function createFolder() {
-      if (!isAdmin) {
-        alert('Only admin can create folders!');
-        return;
-      }
       const folderName = document.getElementById('folder-name').value;
       if (folderName) {
         const timestamp = new Date().toLocaleString();
@@ -181,24 +170,7 @@
       alert('Logged out successfully!');
       document.getElementById('dashboard').style.display = 'none';
       document.getElementById('login').style.display = 'block';
-      document.getElementById('admin-section').style.display = 'none';
-      isAdmin = false
     }
   </script>
-   <script>
-  function renderFiles() {
-    const fileList = document.getElementById('file-list');
-    fileList.innerHTML = '';
-    let files = JSON.parse(localStorage.getItem('files')) || [];
-    files.forEach(file => {
-      const fileDiv = document.createElement('div');
-      fileDiv.className = 'file';
-      fileDiv.innerHTML = `<a href="${file.url}" target="_blank">${file.name}</a>`;
-      fileList.appendChild(fileDiv);
-    });
-  }
-
-  window.onload = renderFiles;
-</script>
 </body>
 </html>
