@@ -13,7 +13,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: #6a0dad; /* Purple background */
+      background-color: #6a0dad;
       color: #fff;
     }
     .container {
@@ -46,7 +46,7 @@
       cursor: pointer;
       font-size: 16px;
       transition: background-color 0.3s;
-      margin-top: 10px; /* Added margin to separate buttons */
+      margin-top: 10px;
     }
     button:hover {
       background-color: #5a0cac;
@@ -66,34 +66,19 @@
     }
     .actions {
       display: flex;
-      gap: 10px; /* Added gap to separate buttons */
+      gap: 10px;
     }
     .actions button {
       flex: 1;
     }
     #logout-view {
-      margin-top: 20px; /* Space above the logout button */
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container" id="app">
-    <h1>Sign In</h1>
-    <div id="sign-in">
-      <input type="email" id="email" placeholder="Enter Email">
-      <input type="password" id="password" placeholder="Enter Password">
-      <input type="text" id="username" placeholder="Create Username">
-      <button onclick="signIn()">Sign In</button>
-    </div>
-
-    <div id="login" style="display:none;">
-      <h2>Login</h2>
-      <input type="text" id="login-username" placeholder="Enter Username">
-      <input type="password" id="login-password" placeholder="Enter Password">
-      <button onclick="logIn()">Login</button>
-    </div>
-
-    <div id="dashboard" style="display:none;">
+    <div id="dashboard">
       <h2>Dashboard</h2>
       <div id="folders"></div>
       <input type="text" id="folder-name" placeholder="Folder Name">
@@ -113,7 +98,7 @@
       <div id="files"></div>
     </div>
 
-    <div id="logout-view" style="display:none;">
+    <div id="logout-view">
       <button onclick="logOut()">Logout</button>
     </div>
   </div>
@@ -122,37 +107,8 @@
     let folders = {};
     let currentFolder = null;
 
-    function signIn() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const username = document.getElementById('username').value;
-
-      if (email && password && username) {
-        alert('Sign In Successful!');
-        document.getElementById('sign-in').style.display = 'none';
-        document.getElementById('login').style.display = 'block';
-      } else {
-        alert('Please fill all fields!');
-      }
-    }
-
-    function logIn() {
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
-
-      if (username && password) {
-        alert('Login Successful!');
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('logout-view').style.display = 'block';
-      } else {
-        alert('Please fill all fields!');
-      }
-    }
-
     function createFolder() {
       const folderName = document.getElementById('folder-name').value;
-
       if (folderName) {
         folders[folderName] = [];
         renderFolders();
@@ -176,7 +132,6 @@
 
     function deleteFolder() {
       const folderName = document.getElementById('folder-name').value;
-
       if (folders[folderName]) {
         delete folders[folderName];
         renderFolders();
@@ -195,11 +150,14 @@
     function renderFiles() {
       const filesDiv = document.getElementById('files');
       filesDiv.innerHTML = '';
-
       folders[currentFolder].forEach(file => {
         const fileDiv = document.createElement('div');
         fileDiv.className = 'file';
-        fileDiv.textContent = file;
+        fileDiv.textContent = file.name;
+        const openButton = document.createElement('button');
+        openButton.textContent = "Open";
+        openButton.onclick = () => openFile(file);
+        fileDiv.appendChild(openButton);
         filesDiv.appendChild(fileDiv);
       });
     }
@@ -207,9 +165,9 @@
     function uploadFile() {
       const fileInput = document.getElementById('file-input');
       const file = fileInput.files[0];
-
       if (file) {
-        folders[currentFolder].push(file.name);
+        const fileURL = URL.createObjectURL(file);
+        folders[currentFolder].push({ name: file.name, url: fileURL });
         renderFiles();
         fileInput.value = '';
       } else {
@@ -217,58 +175,15 @@
       }
     }
 
-    function deleteFile() {
-      if (folders[currentFolder].length > 0) {
-        folders[currentFolder].pop();
-        renderFiles();
-      } else {
-        alert('No files to delete!');
-      }
+    function openFile(file) {
+      window.open(file.url, '_blank');
     }
 
     function logOut() {
       alert('Logged out successfully!');
-      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
       document.getElementById('folder-view').style.display = 'none';
-      document.getElementById('logout-view').style.display = 'none';
-      document.getElementById('login').style.display = 'block';
     }
-    function renderFiles() {
-  const filesDiv = document.getElementById('files');
-  filesDiv.innerHTML = '';
-
-  folders[currentFolder].forEach(file => {
-    const fileDiv = document.createElement('div');
-    fileDiv.className = 'file';
-    fileDiv.textContent = file.name;
-    
-    // Create "Open File" button
-    const openButton = document.createElement('button');
-    openButton.textContent = "Open";
-    openButton.onclick = () => openFile(file);
-    
-    fileDiv.appendChild(openButton);
-    filesDiv.appendChild(fileDiv);
-  });
-}
-
-function uploadFile() {
-  const fileInput = document.getElementById('file-input');
-  const file = fileInput.files[0];
-
-  if (file) {
-    const fileURL = URL.createObjectURL(file); // Create a URL for the file
-    folders[currentFolder].push({ name: file.name, url: fileURL });
-    renderFiles();
-    fileInput.value = '';
-  } else {
-    alert('Please select a file!');
-  }
-}
-
-function openFile(file) {
-  window.open(file.url, '_blank');
-}
   </script>
 </body>
 </html>
