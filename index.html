@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple File Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #6a0dad;
+      color: #fff;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #6a0dad;
+    }
+    input[type="text"], input[type="password"], input[type="email"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #6a0dad;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #5a0cac;
+    }
+    .folder, .file {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      color: #333;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .folder:hover, .file:hover {
+      background-color: #e6e6e6;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+    .actions button {
+      flex: 1;
+    }
+    #logout-view {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <div id="dashboard">
+      <h2>Dashboard</h2>
+      <div id="folders"></div>
+      <input type="text" id="folder-name" placeholder="Folder Name">
+      <div class="actions">
+        <button onclick="createFolder()">Create Folder</button>
+        <button onclick="deleteFolder()">Delete Folder</button>
+      </div>
+    </div>
+
+    <div id="folder-view" style="display:none;">
+      <h2>Folder View</h2>
+      <input type="file" id="file-input">
+      <div class="actions">
+        <button onclick="uploadFile()">Upload File</button>
+        <button onclick="deleteFile()">Delete File</button>
+      </div>
+      <div id="files"></div>
+    </div>
+
+    <div id="logout-view">
+      <button onclick="logOut()">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    let folders = {};
+    let currentFolder = null;
+
+    function createFolder() {
+      const folderName = document.getElementById('folder-name').value;
+      if (folderName) {
+        folders[folderName] = [];
+        renderFolders();
+        document.getElementById('folder-name').value = '';
+      } else {
+        alert('Folder name cannot be empty!');
+      }
+    }
+
+    function renderFolders() {
+      const foldersDiv = document.getElementById('folders');
+      foldersDiv.innerHTML = '';
+      Object.keys(folders).forEach(folder => {
+        const folderDiv = document.createElement('div');
+        folderDiv.className = 'folder';
+        folderDiv.textContent = folder;
+        folderDiv.onclick = () => openFolder(folder);
+        foldersDiv.appendChild(folderDiv);
+      });
+    }
+
+    function deleteFolder() {
+      const folderName = document.getElementById('folder-name').value;
+      if (folders[folderName]) {
+        delete folders[folderName];
+        renderFolders();
+      } else {
+        alert('Folder not found!');
+      }
+    }
+
+    function openFolder(folderName) {
+      currentFolder = folderName;
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('folder-view').style.display = 'block';
+      renderFiles();
+    }
+
+    function renderFiles() {
+      const filesDiv = document.getElementById('files');
+      filesDiv.innerHTML = '';
+      folders[currentFolder].forEach(file => {
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'file';
+        fileDiv.textContent = file.name;
+        const openButton = document.createElement('button');
+        openButton.textContent = "Open";
+        openButton.onclick = () => openFile(file);
+        fileDiv.appendChild(openButton);
+        filesDiv.appendChild(fileDiv);
+      });
+    }
+
+    function uploadFile() {
+      const fileInput = document.getElementById('file-input');
+      const file = fileInput.files[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        folders[currentFolder].push({ name: file.name, url: fileURL });
+        renderFiles();
+        fileInput.value = '';
+      } else {
+        alert('Please select a file!');
+      }
+    }
+
+    function openFile(file) {
+      window.open(file.url, '_blank');
+    }
+
+    function logOut() {
+      alert('Logged out successfully!');
+      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById('folder-view').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
