@@ -183,6 +183,23 @@
       document.getElementById('login').style.display = 'block';
       document.getElementById('admin-section').style.display = 'none';
       isAdmin = false;
+
+      <script>
+  function renderFiles() {
+    const fileList = document.getElementById('file-list');
+    fileList.innerHTML = '';
+    let files = JSON.parse(localStorage.getItem('files')) || [];
+    files.forEach(file => {
+      const fileDiv = document.createElement('div');
+      fileDiv.className = 'file';
+      fileDiv.innerHTML = `<a href="${file.url}" target="_blank">${file.name}</a>`;
+      fileList.appendChild(fileDiv);
+    });
+  }
+
+  window.onload = renderFiles;
+</script>
+
     }
   </script>
 </body>
