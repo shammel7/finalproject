@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin File Manager</title>
+  <title>File Manager</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -63,6 +63,11 @@
       padding: 5px;
       width: auto;
     }
+    .file a {
+      text-decoration: none;
+      color: #333;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -86,26 +91,26 @@
 
   <script>
     let files = [];
-    const adminCredentials = { username: "admin", password: "admin123" };
-
+    
     function logIn() {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
-
-      if (username === adminCredentials.username && password === adminCredentials.password) {
+      
+      if (username && password) {
         alert('Login Successful!');
         document.getElementById('login').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
       } else {
-        alert('Access Denied! Only Admin Can Log In.');
+        alert('Please enter valid credentials!');
       }
     }
 
     function uploadFile() {
       const fileInput = document.getElementById('file-input');
       if (fileInput.files.length > 0) {
-        const fileName = fileInput.files[0].name;
-        files.push(fileName);
+        const file = fileInput.files[0];
+        const fileURL = URL.createObjectURL(file);
+        files.push({ name: file.name, url: fileURL });
         renderFiles();
       } else {
         alert('Please select a file to upload!');
@@ -113,7 +118,7 @@
     }
 
     function deleteFile(fileName) {
-      files = files.filter(file => file !== fileName);
+      files = files.filter(file => file.name !== fileName);
       renderFiles();
     }
 
@@ -123,7 +128,7 @@
       files.forEach(file => {
         const fileDiv = document.createElement('div');
         fileDiv.className = 'file';
-        fileDiv.innerHTML = `${file} <button onclick="deleteFile('${file}')">Delete</button>`;
+        fileDiv.innerHTML = `<a href="${file.url}" target="_blank">${file.name}</a> <button onclick="deleteFile('${file.name}')">Delete</button>`;
         fileList.appendChild(fileDiv);
       });
     }
